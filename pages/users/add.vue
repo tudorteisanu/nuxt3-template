@@ -1,14 +1,15 @@
 <script setup>
-import { useLogin } from "~/composables/auth/useLogin";
+import { useCreateUser } from "~/composables/users/useCreateUser";
 
-useHead({
-  title: "Login",
-});
 definePageMeta({
-  layout: "auth",
-  middleware: "auth",
+  middleware: ["auth"],
 });
-const { login, isSubmitting } = useLogin();
+useHead({
+  title: "Create User",
+});
+const { createUser, isSubmitting } = useCreateUser();
+const submitting = toRef(isSubmitting);
+
 </script>
 
 <template>
@@ -17,9 +18,19 @@ const { login, isSubmitting } = useLogin();
       Create User
     </v-card-title>
     <v-card-text>
-      <v-form @submit.prevent="login()">
+      <v-form @submit.prevent="createUser()">
         <v-container>
           <v-row>
+            <v-col
+              cols="12"
+              class="mt-0"
+            >
+              <base-text-field
+                label="Email"
+                name="email"
+                type="email"
+              />
+            </v-col>
             <v-col
               cols="12"
               class="mt-0"
@@ -34,9 +45,8 @@ const { login, isSubmitting } = useLogin();
               class="mt-0"
             >
               <base-text-field
-                label="Password"
-                name="password"
-                type="password"
+                label="Bio"
+                name="bio"
               />
             </v-col>
             <v-col
@@ -47,16 +57,10 @@ const { login, isSubmitting } = useLogin();
                 type="submit"
                 style="width: 100%"
                 color="primary"
-                :loading="isSubmitting"
+                :loading="submitting"
               >
                 Submit
               </v-btn>
-              <div class="mt-4 text-right">
-                <span>Need an account?</span>
-                <nuxt-link to="/register">
-                  Sign Up
-                </nuxt-link>
-              </div>
             </v-col>
           </v-row>
         </v-container>

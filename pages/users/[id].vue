@@ -5,19 +5,21 @@ definePageMeta({
   middleware: ["auth"],
 });
 useHead({
-  title: "Users",
+  title: "Edit user",
 });
-const { fetchUser, updateUser, isSubmitting } = useUpdateUser();
+const { updateUser, isSubmitting, fetchUser } = useUpdateUser();
+const submitting = toRef(isSubmitting);
+
 const route = useRoute();
 onBeforeMount(async () => {
-  await fetchUser(Number(route.params.id));
+  await fetchUser(route.params.id);
 });
 </script>
 
 <template>
   <v-card style="max-width: 400px;" class="mx-auto mt-10">
     <v-card-title class="text-center">
-      Create User
+      {{ $t('pages.editUser.title') }}
     </v-card-title>
     <v-card-text>
       <v-form @submit.prevent="updateUser()">
@@ -28,7 +30,7 @@ onBeforeMount(async () => {
               class="mt-0"
             >
               <base-text-field
-                label="Email"
+                :label="$t('pages.editUser.form.email')"
                 name="email"
                 type="email"
               />
@@ -38,8 +40,8 @@ onBeforeMount(async () => {
               class="mt-0"
             >
               <base-text-field
-                label="First name"
-                name="firstName"
+                :label="$t('pages.editUser.form.username')"
+                name="username"
               />
             </v-col>
             <v-col
@@ -47,8 +49,8 @@ onBeforeMount(async () => {
               class="mt-0"
             >
               <base-text-field
-                label="Last name"
-                name="lastName"
+                :label="$t('pages.editUser.form.bio')"
+                name="bio"
               />
             </v-col>
             <v-col
@@ -59,9 +61,9 @@ onBeforeMount(async () => {
                 type="submit"
                 style="width: 100%"
                 color="primary"
-                :loading="isSubmitting"
+                :loading="submitting"
               >
-                Submit
+                {{ $t('pages.editUser.form.submit') }}
               </v-btn>
             </v-col>
           </v-row>

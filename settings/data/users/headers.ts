@@ -1,22 +1,22 @@
-import { HeaderInterface } from "~/types/header.interface";
-import { UserInterface } from "~/types/user.interface";
+import type { HeaderInterface } from "~/types/header.interface";
+import type { UserInterface } from "~/types/user.interface";
 
 const headers: HeaderInterface<UserInterface>[] = [
   {
-    title: "ID",
-    key: "id",
-  },
-  {
-    title: "First name",
-    key: "firstName",
-  },
-  {
-    title: "Last name",
-    key: "lastName",
+    title: "Username",
+    key: "username",
   },
   {
     title: "Email",
     key: "email",
+  },
+  {
+    title: "Updated on",
+    key: "updatedOn",
+  },
+  {
+    title: "Updated on",
+    key: "createdOn",
   },
   {
     title: "",

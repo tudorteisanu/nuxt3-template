@@ -1,4 +1,4 @@
-import { NuxtAppConfig } from "@nuxt/schema";
+import type { NuxtAppConfig } from "@nuxt/schema";
 
 const appConfig: Partial<NuxtAppConfig> = {
   head: {

@@ -1,8 +1,8 @@
 import { useForm } from "vee-validate";
-import { CreateUserInterface } from "~/types/user.interface";
-import useApi from "~/composables/api";
-import loginFrom from "~/settings/forms/loginForm";
+import type { CreateUserInterface } from "~/types/user.interface";
+import useApi from "~/composables/base/api";
 import { useAuthStore } from "~/stores/auth";
+import useLoginForm from "~/composables/auth/useLoginForm";
 
 interface UseLoginInterface {
   login: () => void;
@@ -13,11 +13,11 @@ export const useLogin = (): UseLoginInterface => {
   const router = useRouter();
   const store = useAuthStore();
   const api = useApi();
-
-  const { handleSubmit, setErrors, isSubmitting } = useForm<CreateUserInterface>(loginFrom);
+  const loginForm = useLoginForm();
+  const { handleSubmit, setErrors, isSubmitting } = useForm<CreateUserInterface>(loginForm);
 
   const login = handleSubmit(async (values) => {
-    const { data, error } = await api.post("/auth/login", { ...values, roles: ["user"] });
+    const { data, error } = await api("/auth/login").post(values).json();
 
     if (data.value) {
       store.login(data.value);
@@ -25,7 +25,7 @@ export const useLogin = (): UseLoginInterface => {
       return;
     }
 
-    if (error.value.data.errors) {
+    if (error?.value?.data?.errors) {
       setErrors(error.value.data.errors);
     }
   });

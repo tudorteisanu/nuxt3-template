@@ -1,4 +1,5 @@
 import { storeToRefs } from "pinia";
+import { useAuth } from "~/composables/base/auth";
 
 export default defineNuxtPlugin(async () => {
   const cookieToken = useCookie("token", {

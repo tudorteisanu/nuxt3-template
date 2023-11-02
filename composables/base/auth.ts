@@ -1,13 +1,14 @@
 import { storeToRefs } from "pinia";
+import { useFetch } from "@vueuse/core";
 import useApi from "./api";
-import { CreateUserInterface, UserInterface } from "~/types/user.interface";
+import type { CreateUserInterface, UserInterface } from "~/types/user.interface";
 import type { CredentialsInterface } from "~/types";
 import { useAuthStore } from "~/stores/auth";
 
 interface AuthInterface {
   login: (user: UserInterface) => void;
   logout: () => void;
-  check: (token: string) => Promise<void>;
+  check: (token: string) => void;
   register: (data: CreateUserInterface) => Promise<void>;
 }
 
@@ -15,9 +16,10 @@ export const useAuth = (): AuthInterface => {
   const authStore = useAuthStore();
   const router = useRouter();
   const api = useApi();
-
+  const { currentUser } = storeToRefs(useAuthStore());
+  const { apiUrl } = useRuntimeConfig().public;
   const login = async (user: any): Promise<void> => {
-    const { data } = await useFetch<CredentialsInterface>("https://shoply-api.nanoit.dev/api/auth/login", {
+    const { data } = await api.post("/login", {
       body: user,
       method: "POST",
     });
@@ -39,24 +41,22 @@ export const useAuth = (): AuthInterface => {
   };
 
   const check = async (token: string): Promise<void> => {
-    const { data, error } = await useFetch<UserInterface>("https://shoply-api.nanoit.dev/api/auth/user-info", {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const { user } = await $fetch<CredentialsInterface>(`${apiUrl}/auth/check`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
 
-    const { currentUser } = storeToRefs(useAuthStore());
-
-    if (error.value) {
+      authStore.isLoggedIn = true;
+      authStore.token = token;
+      currentUser.value = user;
+    }
+    catch (e) {
       authStore.isLoggedIn = false;
       authStore.token = null;
       currentUser.value = null;
-      return;
     }
-
-    authStore.isLoggedIn = true;
-    authStore.token = token;
-    currentUser.value = data.value;
   };
 
   return { login, logout, check, register };

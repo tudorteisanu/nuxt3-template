@@ -1,20 +1,19 @@
 <script setup>
-import { storeToRefs } from "pinia";
-
 definePageMeta({
   middleware: ["auth"],
 });
 useHead({
   title: "Home",
 });
-const user = storeToRefs(useAuthStore());
 </script>
 
 <template>
-  <div>
-    <div>
+  <v-card flat="" height="100%">
+    <v-card-title>
       <h1>{{ $t('pages.home.title') }}</h1>
-      <pre>{{ user }}</pre>
-    </div>
-  </div>
+    </v-card-title>
+    <v-card-text>
+      <div>Home page loaded!</div>
+    </v-card-text>
+  </v-card>
 </template>

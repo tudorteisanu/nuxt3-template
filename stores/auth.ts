@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
-import { UserInterface } from "~/types/user.interface";
-import type { CredentialsInterface } from "~/types";
+import type { CredentialsInterface, UserInterface } from "~/types";
 
 interface AuthStoreStateInterface {
   isLoggedIn: Ref<boolean>;
@@ -15,15 +14,18 @@ export const useAuthStore = defineStore("auth", (): AuthStoreStateInterface => {
   const currentUser = useState<UserInterface | null>("user", () => null);
   const token: Ref<string | null> = ref(null);
 
-  const login = ({ user, accessToken }: CredentialsInterface) => {
-    const token = useCookie("token");
-    token.value = accessToken;
+  const login = (payload: CredentialsInterface) => {
+    const { tokens, user } = payload;
+    const cookieToken = useCookie("token");
+    cookieToken.value = tokens.access;
+    token.value = tokens.access;
     currentUser.value = user;
     isLoggedIn.value = true;
   };
 
   const logout = () => {
-    const token = useCookie("token");
+    const cookieToken = useCookie("token");
+    cookieToken.value = null;
     token.value = null;
     currentUser.value = null;
     isLoggedIn.value = false;

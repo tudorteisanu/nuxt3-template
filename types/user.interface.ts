@@ -1,15 +1,16 @@
 export interface UserInterface {
   id: number;
-  firstName: string;
-  lastName: string;
+  username: string;
+  password: string;
   email: string;
+  createdOn: string;
+  updatedOn: string;
 }
 
 export interface CreateUserInterface {
-  firstName: string;
-  lastName: string;
+  username: string;
+  bio: string;
   email: string;
-  roles: Array<string>;
   password: string;
   passwordConfirm: string;
 }

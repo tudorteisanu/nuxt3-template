@@ -19,5 +19,14 @@ export default {
         submit: "Submit",
       },
     },
+    editUser: {
+      title: "Edit User",
+      form: {
+        username: "Username",
+        email: "Email",
+        bio: "BIO",
+        submit: "Edit",
+      },
+    },
   },
 };

@@ -35,18 +35,6 @@ module.exports = {
             "stroustrup"
         ],
         "no-shadow": "off",
-        "@typescript-eslint/no-shadow": [
-            "error",
-            {
-                "allow": [
-                    "Vue",
-                    "state",
-                    "getters"
-                ],
-                "ignoreFunctionTypeParameterNameValueShadow": true,
-                "hoist": "never"
-            }
-        ],
         "no-bitwise": "off",
         "no-plusplus": "off",
         "no-unused-vars": "off",
@@ -87,5 +75,7 @@ module.exports = {
             }
         ],
         "vue/multi-word-component-names": "off",
+        "no-template-curly-in-string": "off",
+        "@typescript-eslint/no-shadow": "off",
     },
 }

@@ -29,17 +29,8 @@ const { register, isSubmitting } = useRegister();
               class="mt-0"
             >
               <base-text-field
-                label="First name"
-                name="firstName"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              class="mt-0"
-            >
-              <base-text-field
-                label="Last name"
-                name="lastName"
+                label="Username"
+                name="username"
               />
             </v-col>
             <v-col

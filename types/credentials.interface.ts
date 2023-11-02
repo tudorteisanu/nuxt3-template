@@ -1,6 +1,12 @@
-import { UserInterface } from "~/types";
+import type { UserInterface } from "~/types/user.interface";
+
+export interface TokensInterface {
+  access: string;
+  refresh: string;
+}
 
 export interface CredentialsInterface {
-  user: UserInterface | null;
-  accessToken: string | null;
+  tokens: TokensInterface;
+  user: UserInterface;
+  message: string;
 }

@@ -2,13 +2,11 @@ const viteConfig = {
   define: {
     "process.env.DEBUG": false,
   },
+  ssr: {
+    noExternal: ["vuetify"],
+  },
   css: {
     devSourcemap: true,
-    preprocessorOptions: {
-      scss: {
-        additionalData: "@import \"@/assets/scss/_variables.scss\";",
-      },
-    },
   },
 };
 

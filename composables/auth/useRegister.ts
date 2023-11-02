@@ -1,7 +1,7 @@
 import { useForm } from "vee-validate";
-import { CreateUserInterface } from "~/types/user.interface";
-import useApi from "~/composables/api";
-import registerForm from "~/settings/forms/registerForm";
+import type { CreateUserInterface } from "~/types/user.interface";
+import useApi from "~/composables/base/api";
+import useRegisterForm from "~/composables/auth/useRegisterForm";
 
 interface UseRegisterInterface {
   register: () => void;
@@ -11,10 +11,11 @@ interface UseRegisterInterface {
 export const useRegister = (): UseRegisterInterface => {
   const router = useRouter();
   const api = useApi();
+  const registerForm = useRegisterForm();
   const { handleSubmit, setErrors, isSubmitting } = useForm<CreateUserInterface>(registerForm);
 
   const register = handleSubmit(async (values) => {
-    const { error } = await api.post("/auth/register", { ...values, roles: ["user"] });
+    const { error } = await api("/auth/register").post({ ...values });
 
     if (!error?.value?.data) {
       router.push("/");

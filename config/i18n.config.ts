@@ -1,4 +1,4 @@
-import { NuxtI18nOptions } from "@nuxtjs/i18n";
+import type { NuxtI18nOptions } from "@nuxtjs/i18n";
 
 const i18nConfig: NuxtI18nOptions = {
   baseUrl: "http://localhost:3000",
@@ -24,6 +24,7 @@ const i18nConfig: NuxtI18nOptions = {
     fallbackLocale: "en",
     legacy: false,
   },
+  detectBrowserLanguage: false,
 };
 
 export default i18nConfig;
