@@ -1,5 +1,5 @@
 <script setup>
-import { useRegister } from "~/composables/auth/useRegister";
+import { useRegister } from "~/composables";
 
 useHead({
   title: "Register",

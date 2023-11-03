@@ -1,6 +1,6 @@
 <script setup>
-import { useLogout } from "~/composables/auth/useLogout";
-const logout = useLogout();
+import { useAuth } from "~/composables";
+const { logout } = useAuth();
 
 const items = ref([
   {

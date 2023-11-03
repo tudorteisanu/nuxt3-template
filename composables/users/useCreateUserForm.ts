@@ -1,4 +1,4 @@
-import { useValidation } from "~/composables/base/validation";
+import { useValidation } from "~/composables";
 
 const useCreateUserForm = () => {
   const validation = useValidation();

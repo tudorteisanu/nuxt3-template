@@ -1,24 +1,7 @@
 <script setup>
-import { useFetchUsers } from "~/composables/users/useFetchUsers";
+import { useFetchUsers } from "~/composables";
 
-definePageMeta({
-  middleware: ["auth"],
-});
-useHead({
-  title: "Users",
-});
-const { fetchUsers } = useFetchUsers();
-
-onBeforeMount(async () => {
-  await fetchUsers();
-});
-
-const store = useUsersStore();
-
-const updateUsersList = async (pagination) => {
-  store.updatePagination(pagination);
-  await fetchUsers();
-};
+useFetchUsers();
 </script>
 
 <template>
@@ -31,7 +14,7 @@ const updateUsersList = async (pagination) => {
     <v-card-text>
       <v-card>
         <v-card-text>
-          <UsersList @update:pagination="updateUsersList" />
+          <UsersList />
         </v-card-text>
       </v-card>
     </v-card-text>

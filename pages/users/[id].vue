@@ -1,19 +1,7 @@
 <script setup>
-import { useUpdateUser } from "~/composables/users/useUpdateUser";
+import { useUpdateUser } from "~/composables";
 
-definePageMeta({
-  middleware: ["auth"],
-});
-useHead({
-  title: "Edit user",
-});
-const { updateUser, isSubmitting, fetchUser } = useUpdateUser();
-const submitting = toRef(isSubmitting);
-
-const route = useRoute();
-onBeforeMount(async () => {
-  await fetchUser(route.params.id);
-});
+const { updateUser, isSubmitting } = useUpdateUser();
 </script>
 
 <template>
@@ -61,7 +49,7 @@ onBeforeMount(async () => {
                 type="submit"
                 style="width: 100%"
                 color="primary"
-                :loading="submitting"
+                :loading="isSubmitting"
               >
                 {{ $t('pages.editUser.form.submit') }}
               </v-btn>

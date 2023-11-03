@@ -1,60 +1,94 @@
 import { defineStore } from "pinia";
-import type { Ref } from "vue";
-import type { UserInterface } from "~/types/user.interface";
-import type { PaginationInterface } from "~/types/pagination.interface";
+import { useApiFetch } from "~/composables";
+import type { CreateUserInterface, UserInterface } from "~/types";
 
-interface UsersStoreStateInterface {
-  items: Ref<UserInterface[]>;
-  pagination: Ref<PaginationInterface>;
-  removeUser: (userId: number) => void;
-  addUser: (user: UserInterface) => void;
-  setUsers: (users: UserInterface[]) => void;
-  updateUser: (id: number, users: UserInterface) => void;
-  getUserById: (id: number) => UserInterface | undefined;
-  updatePagination: (pagination: Partial<PaginationInterface>) => void;
-}
+export const useUsersStore = defineStore({
+  id: "users",
+  state: () => ({
+    items: [] as UserInterface[],
+    pagination: {
+      size: 10,
+      page: 1,
+      total: 0,
+    },
+    isFetching: false,
+  }),
+  getters: {
 
-export const useUsersStore = defineStore("users", (): UsersStoreStateInterface => {
-  const items: Ref<UserInterface[]> = ref([]);
-  const pagination: Ref<PaginationInterface> = ref({
-    page: 1,
-    size: 10,
-    total: 0,
-  });
+  },
+  actions: {
+    async fetchUsers() {
+      try {
+        this.isFetching = true;
+        const searchParams = new URLSearchParams({
+          size: this.pagination.size.toString(),
+          page: this.pagination.page.toString(),
+        });
 
-  const addUser = (user: UserInterface) => {
-    items.value.push(user);
-  };
+        const data = await useApiFetch(["/users", searchParams.toString()].join("?"));
 
-  const removeUser = (userId: number) => {
-    const userIndex = items.value.findIndex(item => item.id === userId);
+        if (data) {
+          const { items, ...pagination } = data;
+          this.items = items;
+          this.pagination = pagination;
+        }
+      }
+      catch (e) {
+        console.log(e);
+      }
+      finally {
+        this.isFetching = false;
+      }
+    },
+    async fetchUserById(id: string) {
+      return await useApiFetch(`/users/${id}`);
+    },
+    async updateUserById(id: string, payload: UserInterface) {
+      const response = await useApiFetch(`/users/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
 
-    if (~userIndex) {
-      items.value.splice(userIndex, 1);
-    }
-  };
+      this.updateUser(id, response);
 
-  const setUsers = (users: UserInterface[]) => {
-    items.value = users;
-  };
+      return response;
+    },
+    async removeUser(id: string) {
+      await useApiFetch(`/users/${id}`, {
+        method: "DELETE",
+      });
 
-  const updateUser = (id: number, user: UserInterface) => {
-    const index = items.value.findIndex(item => item.id === id);
+      const index = this.items.findIndex(item => item.id === id);
 
-    if (~index) {
-      items.value[index] = {
-        ...items.value[index],
-        ...user,
+      if (index !== -1) {
+        this.items.splice(index, 1);
+      }
+    },
+    async addUser(payload: CreateUserInterface) {
+      const response = await useApiFetch("/users", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      this.items.push(response);
+
+      return response;
+    },
+    updateUser(id: string, payload: UserInterface) {
+      const index = this.items.findIndex(item => item.id === id);
+
+      if (index === -1) {
+        this.items.push(payload);
+        return;
+      }
+
+      this.items[index] = payload;
+    },
+    updatePagination(payload: Record<string, any>) {
+      this.pagination = {
+        ...this.pagination,
+        ...payload,
       };
-    }
-  };
-
-  const getUserById = (id: number) => {
-    return items.value.find(item => item.id === id);
-  };
-  const updatePagination = (newPagination: Partial<PaginationInterface>) => {
-    pagination.value = { ...pagination.value, ...newPagination };
-  };
-
-  return { items, pagination, removeUser, addUser, setUsers, updateUser, getUserById, updatePagination };
+    },
+  },
 });
