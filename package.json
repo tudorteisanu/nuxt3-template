@@ -28,11 +28,12 @@
     "@mdi/font": "^7.3.67",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@pinia/nuxt": "^0.5.1",
+    "@vee-validate/i18n": "^4.11.8",
+    "@vee-validate/rules": "^4.11.8",
     "@vueuse/core": "^10.5.0",
     "pinia": "^2.1.7",
     "sass": "^1.69.5",
     "vee-validate": "^4.11.8",
-    "vuetify": "3.4.0-alpha.1",
-    "yup": "^1.3.2"
+    "vuetify": "3.4.0-alpha.1"
   }
 }

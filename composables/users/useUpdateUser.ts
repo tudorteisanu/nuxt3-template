@@ -1,33 +1,34 @@
 import { useForm } from "vee-validate";
 import type { Ref } from "vue";
 import type { UserInterface } from "~/types";
-import useEditUserFrom from "~/composables/users/useEditUserForm";
-import useApi from "~/composables/base/api";
-import { useFetchUserById } from "~/composables/users/useFetchUserById";
+import { useUsersStore } from "~/stores";
+import { editUserForm } from "~/settings";
 
 interface UseFetchUserInterface {
   updateUser: () => void;
-  fetchUser: (id: string) => Promise<void>;
   isSubmitting: Ref<boolean>
 }
 
 export const useUpdateUser = (): UseFetchUserInterface => {
-  const editUserForm = useEditUserFrom();
-  const { handleSubmit, isSubmitting, setValues } = useForm<UserInterface>(editUserForm);
-  const api = useApi();
-  const store = useUsersStore();
-  const fetchUserById = useFetchUserById();
-
-  const fetchUser = async (id: string) => {
-    const { data } = await fetchUserById(id);
-    setValues(data.value);
-  };
-
-  const updateUser = handleSubmit(async (values) => {
-    const { data } = await api(`/users/${values.id}`).patch(values);
-
-    store.updateUser(data.value.id, data.value);
+  definePageMeta({
+    middleware: ["auth"],
+  });
+  useHead({
+    title: "Edit user",
   });
 
-  return { fetchUser, updateUser, isSubmitting };
+  const route = useRoute();
+  const { handleSubmit, isSubmitting, setValues } = useForm<UserInterface>(editUserForm);
+  const { updateUserById, fetchUserById } = useUsersStore();
+
+  onBeforeMount(async () => {
+    const user = await fetchUserById(route.params.id);
+    setValues(user);
+  });
+
+  const updateUser = handleSubmit(async (values) => {
+    await updateUserById(values.id, values);
+  });
+
+  return { updateUser, isSubmitting };
 };

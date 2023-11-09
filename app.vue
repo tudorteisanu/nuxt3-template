@@ -1,31 +1,33 @@
+<script setup>
+import { useLoadingStore } from "~/stores/index";
+
+const nuxtApp = useNuxtApp();
+const { show } = storeToRefs(useLoadingStore());
+const { start, finish } = useLoadingStore();
+
+addRouteMiddleware("global-loader", () => {
+  start();
+}, {
+  global: true,
+});
+
+nuxtApp.hook("page:finish", () => {
+  finish();
+});
+</script>
+
 <template>
   <NuxtLayout>
-    <div v-show="loading" class="loading-container">
-      <div class="loading">
-        <div class="loading-spinner" />
-        <div>
-          Loading...
-        </div>
+    <div v-show="show" class="loading-container">
+      <div class="centered">
+        <div class="blob-1" />
+        <div class="blob-2" />
       </div>
     </div>
     <NuxtPage />
     <ConfirmDialog />
   </NuxtLayout>
 </template>
-<script setup>
-const nuxtApp = useNuxtApp();
-const loading = ref(false);
-
-addRouteMiddleware("global-loader", () => {
-  loading.value = true;
-}, {
-  global: true,
-});
-
-nuxtApp.hook("page:finish", () => {
-  loading.value = false;
-});
-</script>
 
 <style>
 .loading-container {
@@ -40,23 +42,41 @@ nuxtApp.hook("page:finish", () => {
     align-items: center;
     justify-content: center;
 }
+.centered{
+    width:400px;
+    height:400px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+.blob-1,.blob-2{
+    width:70px;
+    height:70px;
+    position:absolute;
+    background:#fff;
+    border-radius:50%;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+}
+.blob-1{
+    left:20%;
+    animation:osc-l 2.5s ease infinite;
+}
+.blob-2{
+    left:80%;
+    animation:osc-r 2.5s ease infinite;
+    background:#0ff;
+}
+@keyframes osc-l{
+    0%{left:20%;}
+    50%{left:50%;}
+    100%{left:20%;}
+}
+@keyframes osc-r{
+    0%{left:80%;}
+    50%{left:50%;}
+    100%{left:80%;}
+}
 
-.loading-spinner {
-    height: 50px;
-    width: 50px;
-    border: 2px solid red;
-    border-bottom: none;
-    border-top: none;
-    animation: 1s infinite linear spin;
-    border-radius: 100%;
-    padding: 20px;
-}
-@keyframes spin {
-    from {
-        transform:rotate(0deg);
-    }
-    to {
-        transform:rotate(360deg);
-    }
-}
 </style>

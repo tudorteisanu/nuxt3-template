@@ -1,15 +1,6 @@
 <script setup>
-import { useCreateUser } from "~/composables/users/useCreateUser";
-
-definePageMeta({
-  middleware: ["auth"],
-});
-useHead({
-  title: "Create User",
-});
+import { useCreateUser } from "~/composables";
 const { createUser, isSubmitting } = useCreateUser();
-const submitting = toRef(isSubmitting);
-
 </script>
 
 <template>
@@ -57,7 +48,7 @@ const submitting = toRef(isSubmitting);
                 type="submit"
                 style="width: 100%"
                 color="primary"
-                :loading="submitting"
+                :loading="isSubmitting"
               >
                 Submit
               </v-btn>

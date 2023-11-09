@@ -1,5 +1,5 @@
 <script setup>
-import useConfirmDialog from "~/composables/base/confirmDialog";
+import { useConfirmDialog } from "~/composables";
 
 const { visible, options, accept, decline } = useConfirmDialog();
 </script>
@@ -40,14 +40,3 @@ const { visible, options, accept, decline } = useConfirmDialog();
     </v-card>
   </v-dialog>
 </template>
-
-<style>
-.modal {
-    position: fixed;
-    z-index: 999;
-    top: 20%;
-    left: 50%;
-    width: 300px;
-    margin-left: -150px;
-}
-</style>

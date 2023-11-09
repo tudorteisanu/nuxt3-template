@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { headers } from "~/settings/data/users";
-import { useRemoveUser } from "~/composables/users/useRemoveUser";
-import useConfirmDialog from "~/composables/base/confirmDialog";
+import { usersHeaders } from "~/settings";
+import { useConfirmDialog } from "~/composables";
 import { useUsersStore } from "~/stores/users";
 
-const emit = defineEmits(["update:pagination"]);
-
-const usersStore = storeToRefs(useUsersStore());
-const removeUser = useRemoveUser();
-const { items, pagination } = usersStore;
 const { open } = useConfirmDialog();
-
-const onPageUpdate = ({ itemsPerPage, page }): void => {
-  emit("update:pagination", { size: itemsPerPage, page });
+const { items, pagination, isFetching } = storeToRefs(useUsersStore());
+const { fetchUsers, updatePagination, removeUser } = useUsersStore();
+const onUpdatePage = async (page: number) => {
+  updatePagination({ page });
+  await fetchUsers();
+  return page;
 };
-
+const onUpdateItemsPerPage = async (size: number) => {
+  updatePagination({ size });
+  await fetchUsers();
+  return size;
+};
 const deleteUser = (id) => {
   open(() => {
     removeUser(id);
@@ -26,12 +27,13 @@ const deleteUser = (id) => {
   <client-only>
     <v-data-table-server
       :items-per-page="pagination.size"
-      :headers="headers"
+      :headers="usersHeaders"
       :items="items"
       :page="pagination.page"
-      :page-count="3"
       :items-length="pagination.total"
-      @update:options="onPageUpdate"
+      :loading="isFetching"
+      @update:page="onUpdatePage"
+      @update:items-per-page="onUpdateItemsPerPage"
     >
       <template #item.actions="{item}">
         <v-btn

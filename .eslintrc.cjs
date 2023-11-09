@@ -47,15 +47,7 @@ module.exports = {
                 "ignoreRestSiblings": false
             }
         ],
-        "@typescript-eslint/explicit-module-boundary-types": [
-            "error",
-            {
-                "allowedNames": [
-                    "state",
-                    "use"
-                ]
-            }
-        ],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "space-before-function-paren": [
             "error",
             {

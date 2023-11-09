@@ -11,7 +11,7 @@ const visible = ref(false);
 const options = ref({} as Partial<ConfirmDialogOptions>);
 const accept = ref(() => {});
 
-const useConfirmDialog = (customOptions: Partial<ConfirmDialogOptions> = {}) => {
+export const useConfirmDialog = (customOptions: Partial<ConfirmDialogOptions> = {}) => {
   const defaultOptions: ConfirmDialogOptions = {
     text: "Are you sure you want to perform this action?",
     acceptText: "Confirm",
@@ -49,5 +49,3 @@ const useConfirmDialog = (customOptions: Partial<ConfirmDialogOptions> = {}) => 
     decline,
   };
 };
-
-export default useConfirmDialog;

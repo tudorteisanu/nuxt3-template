@@ -1,61 +1,66 @@
 import { storeToRefs } from "pinia";
-import { useFetch } from "@vueuse/core";
-import useApi from "./api";
 import type { CreateUserInterface, UserInterface } from "~/types/user.interface";
-import type { CredentialsInterface } from "~/types";
 import { useAuthStore } from "~/stores/auth";
+import type { LoginInterface } from "~/types/login.interface";
 
 interface AuthInterface {
-  login: (user: UserInterface) => void;
+  login: (user: LoginInterface) => void;
   logout: () => void;
-  check: (token: string) => void;
+  check: () => void;
   register: (data: CreateUserInterface) => Promise<void>;
 }
 
 export const useAuth = (): AuthInterface => {
-  const authStore = useAuthStore();
-  const router = useRouter();
-  const api = useApi();
-  const { currentUser } = storeToRefs(useAuthStore());
-  const { apiUrl } = useRuntimeConfig().public;
-  const login = async (user: any): Promise<void> => {
-    const { data } = await api.post("/login", {
-      body: user,
-      method: "POST",
-    });
+  const { login: storeLogin, refresh, register: storeRegister, setTokens, logout: storeLogout } = useAuthStore();
+  const accessToken = useCookie("accessToken");
+  const refreshToken = useCookie("refreshToken");
 
-    authStore.login(data.value as CredentialsInterface);
-    router.push("/");
+  setTokens({ access: accessToken.value, refresh: refreshToken.value });
+
+  const router = useRouter();
+  const { currentUser, isLoggedIn } = storeToRefs(useAuthStore());
+  const { apiUrl } = useRuntimeConfig().public;
+
+  const login = async (user: LoginInterface): Promise<void> => {
+    const response = await storeLogin(user as LoginInterface);
+
+    accessToken.value = response.tokens.access;
+    refreshToken.value = response.tokens.refresh;
   };
 
   const register = async (user: any): Promise<void> => {
-    const { data } = await api.post("/register", user);
-
-    authStore.login(data.value as CredentialsInterface);
+    await storeRegister(user as CreateUserInterface);
     router.push("/");
   };
 
-  const logout = () => {
-    authStore.logout();
+  const logout = async () => {
+    await storeLogout();
+    accessToken.value = null;
+    refreshToken.value = null;
     router.push("/login");
   };
 
-  const check = async (token: string): Promise<void> => {
+  const check = async (): Promise<void> => {
     try {
-      const { user } = await $fetch<CredentialsInterface>(`${apiUrl}/auth/check`, {
+      if (isLoggedIn.value) {
+        return;
+      }
+      const response = await $fetch<{user: UserInterface}>(`${apiUrl}/auth/check`, {
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${accessToken.value}`,
         },
       });
 
-      authStore.isLoggedIn = true;
-      authStore.token = token;
-      currentUser.value = user;
+      if (response?.user) {
+        isLoggedIn.value = true;
+        currentUser.value = response.user;
+        router.push("/");
+      }
     }
-    catch (e) {
-      authStore.isLoggedIn = false;
-      authStore.token = null;
-      currentUser.value = null;
+    catch (e: any) {
+      if (e.data?.error === "token_expired") {
+        await refresh();
+      }
     }
   };
 

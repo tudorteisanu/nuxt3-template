@@ -1,5 +1,5 @@
 <script setup>
-import { useLogin } from "~/composables/auth/useLogin";
+import { useLogin } from "~/composables";
 
 useHead({
   title: "Login",
@@ -8,7 +8,7 @@ definePageMeta({
   layout: "auth",
   middleware: "auth",
 });
-const { login, isSubmitting } = useLogin();
+const { loginUser } = useLogin();
 </script>
 
 <template>
@@ -17,14 +17,14 @@ const { login, isSubmitting } = useLogin();
       Create User
     </v-card-title>
     <v-card-text>
-      <v-form @submit.prevent="login()">
+      <v-form @submit.prevent="loginUser()">
         <v-container>
           <v-row>
             <v-col
               cols="12"
               class="mt-0"
             >
-              <base-text-field
+              <BaseTextField
                 label="Username"
                 name="username"
               />
@@ -33,7 +33,7 @@ const { login, isSubmitting } = useLogin();
               cols="12"
               class="mt-0"
             >
-              <base-text-field
+              <BaseTextField
                 label="Password"
                 name="password"
                 type="password"
@@ -47,7 +47,6 @@ const { login, isSubmitting } = useLogin();
                 type="submit"
                 style="width: 100%"
                 color="primary"
-                :loading="isSubmitting"
               >
                 Submit
               </v-btn>

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { sideMenu } from "~/settings/menu";
+import { sideMenu } from "~/settings/base/menu";
 const localPath = useLocalePath();
 const drawer = ref(true);
 const toggle = () => {
   drawer.value = !drawer.value;
 };
-const store = useAuthStore();
-const currentUser = toRef(store.currentUser);
+
+const { currentUser } = storeToRefs(useAuthStore());
 const userName = computed(() => {
   if (currentUser.value) {
-    return `${currentUser.value?.firstName} ${currentUser.value?.lastName}`;
+    return currentUser.value?.username;
   }
 
   return null;
@@ -27,7 +27,7 @@ const userName = computed(() => {
           <v-list-item
             v-if="userName"
             :title="userName"
-            :subtitle="currentUser?.email"
+            :subtitle="currentUser.email"
             prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
           />
           <v-list-item
