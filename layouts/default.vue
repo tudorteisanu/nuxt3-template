@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { sideMenu } from "~/settings/menu";
+import { sideMenu } from "~/settings/base/menu";
 const localPath = useLocalePath();
 const drawer = ref(true);
 const toggle = () => {

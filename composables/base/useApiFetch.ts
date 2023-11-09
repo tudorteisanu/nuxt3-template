@@ -8,11 +8,17 @@ export const useApiFetch = async (url: string, options = {}) => {
     };
   }
 
-  return await fetch(toValue(`http://localhost:5001${url}`), {
+  const response = await fetch(toValue(`http://localhost:5001${url}`), {
     headers: {
       ...headers.value,
       "content-type": "application/json",
     },
     ...options,
-  }).then(data => data.json());
+  });
+
+  if (response.ok) {
+    return await response.json();
+  }
+
+  throw await response.json();
 };

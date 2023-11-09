@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { headers } from "~/settings/data/users";
+import { usersHeaders } from "~/settings";
 import { useConfirmDialog } from "~/composables";
 import { useUsersStore } from "~/stores/users";
 
@@ -27,7 +27,7 @@ const deleteUser = (id) => {
   <client-only>
     <v-data-table-server
       :items-per-page="pagination.size"
-      :headers="headers"
+      :headers="usersHeaders"
       :items="items"
       :page="pagination.page"
       :items-length="pagination.total"

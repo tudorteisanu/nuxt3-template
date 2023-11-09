@@ -22,15 +22,10 @@ export const useAuth = (): AuthInterface => {
   const { apiUrl } = useRuntimeConfig().public;
 
   const login = async (user: LoginInterface): Promise<void> => {
-    try {
-      const { tokens } = await storeLogin(user as LoginInterface);
-      accessToken.value = tokens.access;
-      refreshToken.value = tokens.refresh;
-      // router.push("/");
-    }
-    catch (e) {
-      console.log(e);
-    }
+    const response = await storeLogin(user as LoginInterface);
+
+    accessToken.value = response.tokens.access;
+    refreshToken.value = response.tokens.refresh;
   };
 
   const register = async (user: any): Promise<void> => {

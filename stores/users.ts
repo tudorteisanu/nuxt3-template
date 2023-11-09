@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { useApiFetch } from "~/composables";
+import { useApi, useApiFetch } from "~/composables";
 import type { CreateUserInterface, UserInterface } from "~/types";
 
-export const useUsersStore = defineStore({
-  id: "users",
+export const useUsersStore = defineStore("users", {
+
   state: () => ({
     items: [] as UserInterface[],
     pagination: {
@@ -64,15 +64,8 @@ export const useUsersStore = defineStore({
         this.items.splice(index, 1);
       }
     },
-    async addUser(payload: CreateUserInterface) {
-      const response = await useApiFetch("/users", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-
-      this.items.push(response);
-
-      return response;
+    addUser(payload: CreateUserInterface) {
+      return useApi("/users").post(payload);
     },
     updateUser(id: string, payload: UserInterface) {
       const index = this.items.findIndex(item => item.id === id);

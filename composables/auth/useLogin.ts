@@ -1,5 +1,5 @@
 import { useForm } from "vee-validate";
-import useLoginForm from "./useLoginForm";
+import { loginForm } from "~/settings";
 import type { LoginInterface } from "~/types/login.interface";
 import { useAuth } from "~/composables";
 
@@ -11,12 +11,16 @@ interface UseLoginInterface {
 export const useLogin = (): UseLoginInterface => {
   const router = useRouter();
   const { login } = useAuth();
-  const loginForm = useLoginForm();
   const { handleSubmit, isSubmitting } = useForm<LoginInterface>(loginForm);
 
   const loginUser = handleSubmit(async (values: LoginInterface) => {
-    await login(values);
-    router.push("/");
+    try {
+      await login(values);
+      router.push("/");
+    }
+    catch (e: any) {
+      alert(e.error);
+    }
   });
 
   return { loginUser, isSubmitting };

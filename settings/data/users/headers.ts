@@ -1,7 +1,7 @@
 import type { HeaderInterface } from "~/types/header.interface";
 import type { UserInterface } from "~/types/user.interface";
 
-const headers: HeaderInterface<UserInterface>[] = [
+const headers: HeaderInterface<UserInterface>[] | any = [
   {
     title: "Username",
     key: "username",

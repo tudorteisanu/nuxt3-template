@@ -1,7 +1,7 @@
 import { useForm } from "vee-validate";
 import type { Ref } from "vue";
-import useCreateUserForm from "./useCreateUserForm";
 import type { CreateUserInterface } from "~/types";
+import { createUserForm } from "~/settings";
 
 interface UseFetchUserInterface {
   createUser: () => void;
@@ -16,13 +16,16 @@ export const useCreateUser = (): UseFetchUserInterface => {
     title: "Create User",
   });
 
-  const createUserForm = useCreateUserForm();
   const { handleSubmit, isSubmitting } = useForm<CreateUserInterface>(createUserForm);
   const { addUser } = useUsersStore();
   const router = useRouter();
 
   const createUser = handleSubmit(async (values) => {
-    await addUser(values);
+    const { error } = await addUser(values);
+
+    if (error.value) {
+      return;
+    }
     router.push("/users");
   });
 

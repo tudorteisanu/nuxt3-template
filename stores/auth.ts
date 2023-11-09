@@ -3,8 +3,7 @@ import { useApiFetch } from "~/composables";
 import type { CreateUserInterface, TokensInterface, UserInterface } from "~/types";
 import type { LoginInterface } from "~/types/login.interface";
 
-export const useAuthStore = defineStore({
-  id: "auth",
+export const useAuthStore = defineStore("auth", {
   state: () => ({
     currentUser: null as UserInterface | null,
     isLoggedIn: false as boolean,
@@ -16,21 +15,16 @@ export const useAuthStore = defineStore({
   },
   actions: {
     async login(payload: LoginInterface) {
-      try {
-        const response = await useApiFetch("/auth/login", {
-          method: "POST",
-          body: JSON.stringify(payload),
-        });
-        const { user, tokens } = response;
-        this.currentUser = user;
-        this.isLoggedIn = true;
-        this.setTokens(tokens);
+      const response = await useApiFetch("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
 
-        return response;
-      }
-      catch (e) {
-        console.log(e);
-      }
+      const { user, tokens } = response;
+      this.currentUser = user;
+      this.isLoggedIn = true;
+      this.setTokens(tokens);
+      return response;
     },
     async register(payload: CreateUserInterface) {
       try {

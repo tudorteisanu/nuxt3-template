@@ -27,4 +27,8 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@pinia/nuxt",
   ],
+
+  plugins: [
+    "~/plugins/vee-validate.ts",
+  ],
 });

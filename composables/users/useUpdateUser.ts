@@ -1,8 +1,8 @@
 import { useForm } from "vee-validate";
 import type { Ref } from "vue";
-import useEditUserFrom from "./useEditUserForm";
 import type { UserInterface } from "~/types";
 import { useUsersStore } from "~/stores";
+import { editUserForm } from "~/settings";
 
 interface UseFetchUserInterface {
   updateUser: () => void;
@@ -18,7 +18,6 @@ export const useUpdateUser = (): UseFetchUserInterface => {
   });
 
   const route = useRoute();
-  const editUserForm = useEditUserFrom();
   const { handleSubmit, isSubmitting, setValues } = useForm<UserInterface>(editUserForm);
   const { updateUserById, fetchUserById } = useUsersStore();
 

@@ -1,7 +1,7 @@
 import { useForm } from "vee-validate";
-import useRegisterForm from "./useRegisterForm";
 import type { CreateUserInterface } from "~/types/user.interface";
 import { useAuth } from "~/composables";
+import { registerForm } from "~/settings";
 
 interface UseRegisterInterface {
   register: () => void;
@@ -11,7 +11,6 @@ interface UseRegisterInterface {
 export const useRegister = (): UseRegisterInterface => {
   const router = useRouter();
   const { register: createUser } = useAuth();
-  const registerForm = useRegisterForm();
   const { handleSubmit, setErrors, isSubmitting } = useForm<CreateUserInterface>(registerForm);
 
   const register = handleSubmit(async (values) => {

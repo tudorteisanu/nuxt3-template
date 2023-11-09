@@ -1,9 +1,16 @@
 <script setup>
+import { setLocale as setValidationLocale } from "@vee-validate/i18n";
 const { locales, locale, setLocale } = useI18n();
+setValidationLocale(locale.value);
 const changeLocale = async (code) => {
+  setValidationLocale(code);
   await setLocale(code);
   window.location.reload();
 };
+
+watch(() => locale, () => {
+  setValidationLocale(locale.value);
+});
 
 </script>
 

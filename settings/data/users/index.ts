@@ -1,5 +1,3 @@
-import headers from "./headers";
+import usersHeaders from "./headers";
 
-import users from "./users";
-
-export { headers, users };
+export { usersHeaders };
